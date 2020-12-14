@@ -11,6 +11,14 @@ public class SensorDataPollingService extends Thread {
 		start();
 	}
 
+	public void addSensor(int key, SensorInterface sensor){
+		sensors.put(key,sensor);
+	}
+
+	public Object getSensorData(int key){
+		return sensors.get(key).getData();
+	}
+
 	@Override
 	public void run() {
 		sensors.forEach((key, value) -> value.refreshData());

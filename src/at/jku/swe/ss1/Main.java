@@ -2,22 +2,47 @@ package at.jku.swe.ss1;
 
 import at.jku.swe.ss1.actors.TrafficLightInterface;
 import at.jku.swe.ss1.actors.TrafficSignInterface;
+import at.jku.swe.ss1.sensors.SensorInterface;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Main{
+public class Main {
 	public static final int SERVER_SOCKET_PORT = 1234;
 	private SensorDataPollingService sensorDataPollingService;
-	private List<TrafficLightInterface> trafficLights=new ArrayList<>();
-	private List<TrafficSignInterface> trafficSigns=new ArrayList<>();
+	private Map<Integer, TrafficLightInterface> trafficLights = new HashMap<>();
+	private Map<Integer, TrafficSignInterface> trafficSigns = new HashMap<>();
 
-	public Main(){
+	public Main() {
 		new ConnectionReciever(this, SERVER_SOCKET_PORT);     //handle incoming connections
-		sensorDataPollingService=new SensorDataPollingService();    //regularily poll the current sensor data
+		sensorDataPollingService = new SensorDataPollingService();  //regularly poll the current sensor data
 	}
 
 	public static void main(String[] args) {
 		new Main();
+	}
+
+	public Object getSensorData(int key) {
+		return sensorDataPollingService.getSensorData(key);
+	}
+
+	public Exception setTrafficLights(int key, Object data) {
+		return trafficLights.get(key).setData(data);
+	}
+
+	public Exception setTrafficSigns(int key, Object data) {
+		return trafficSigns.get(key).setData(data);
+	}
+
+	public void addSensor(int key, SensorInterface sensor) {
+		sensorDataPollingService.addSensor(key, sensor);
+	}
+
+	public void addTrafficLight(int key, TrafficLightInterface trafficLight) {
+		trafficLights.put(key, trafficLight);
+	}
+
+	public void addTrafficSign(int key, TrafficSignInterface trafficSign) {
+		trafficSigns.put(key, trafficSign);
 	}
 }
